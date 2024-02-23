@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { RequestLogDocument } from '../modules/request-log/request-log.shema'; // Importa el 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(private readonly postsService: PostsService) { }
 
   @Get()
   async getAllPosts(): Promise<RequestLogDocument[]> {
@@ -17,4 +17,11 @@ export class PostsController {
     // Por ejemplo:
     return this.postsService.createPost(postData);
   }
+
+  //eliminas con el id generado del monguillo uwu
+  @Delete(':id')
+  async deletePost(@Param('id') id: string): Promise<void> {
+    return this.postsService.deletePost(id);
+  }
+
 }
