@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post,Put, Body, Param, NotFoundException, ParseIntPipe} from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { RequestLogDocument } from '../modules/request-log/request-log.shema'; // Importa el 
 @Controller('posts')
@@ -16,5 +16,18 @@ export class PostsController {
     // Aquí puedes manejar la lógica para crear un nuevo post utilizando el servicio
     // Por ejemplo:
     return this.postsService.createPost(postData);
+  }
+
+  @Put(':id')
+  async updatePost(@Param('id') id: string, @Body() postData: any): Promise<any> { // Cambia el tipo de 'id' a string
+    try {
+      const updatedPost = await this.postsService.updatePost(id, postData); // No necesitas convertir a string
+      if (!updatedPost) {
+        throw new NotFoundException('Post not found');
+      }
+      return updatedPost;
+    } catch (error: any) {
+      throw new NotFoundException(error.message);
+    }
   }
 }
