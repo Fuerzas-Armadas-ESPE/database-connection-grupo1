@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
+import { Controller, Get, Post,Put, Body,Delete,  Param, NotFoundException, ParseIntPipe} from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { RequestLogDocument } from '../modules/request-log/request-log.shema'; // Importa el 
 @Controller('posts')
@@ -24,4 +24,16 @@ export class PostsController {
     return this.postsService.deletePost(id);
   }
 
+  @Put(':id')
+  async updatePost(@Param('id') id: string, @Body() postData: any): Promise<any> { // Cambia el tipo de 'id' a string
+    try {
+      const updatedPost = await this.postsService.updatePost(id, postData); // No necesitas convertir a string
+      if (!updatedPost) {
+        throw new NotFoundException('Post not found');
+      }
+      return updatedPost;
+    } catch (error: any) {
+      throw new NotFoundException(error.message);
+    }
+  }
 }

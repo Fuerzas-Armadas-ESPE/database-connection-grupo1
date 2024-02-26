@@ -11,11 +11,15 @@ export class PostsService {
   }
 
   async getPost(id: string): Promise<any | null> {
-    const post = await this.postModel.findById(id).exec();
-    if (!post) {
-      throw new NotFoundException('Post not found');
+    try {
+      const post = await this.postModel.findById(id).exec(); // Utiliza directamente el ID de tipo string
+      if (!post) {
+        throw new NotFoundException('Post not found');
+      }
+      return post;
+    } catch (error: any) {
+      throw new InternalServerErrorException(error.message);
     }
-    return post;
   }
 
   async createPost(postData: any): Promise<any> {
